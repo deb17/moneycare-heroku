@@ -1,12 +1,17 @@
-from flask import Flask, redirect, request, abort, url_for
+import os
+
+from flask import Flask, redirect, url_for
+from werkzeug.urls import url_encode
 from flask_dance.contrib.google import make_google_blueprint, google
 
 app = Flask(__name__)
 
 
-app.config['SECRET_KEY'] = '5ad1b20f9e1a66492a68e490e5abfb7d'
-app.config['GOOGLE_OAUTH_CLIENT_ID'] = '737155067926-jpco79782ombb1c068ifj9gln8ea7has.apps.googleusercontent.com'
-app.config['GOOGLE_OAUTH_CLIENT_SECRET'] = 'YJv1OLtf9sSkHntlHiHBcwCZ'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['GOOGLE_OAUTH_CLIENT_ID'] = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
+app.config['GOOGLE_OAUTH_CLIENT_SECRET'] = (
+    os.getenv('GOOGLE_OAUTH_CLIENT_SECRET')
+)
 app.config['OAUTHLIB_RELAX_TOKEN_SCOPE'] = True
 
 google_blueprint = make_google_blueprint(
@@ -19,32 +24,20 @@ google_blueprint = make_google_blueprint(
 app.register_blueprint(google_blueprint)
 
 
-@app.route('/')
-def index():
-
-    url = request.url.replace(
-        'https://debs-moneycare.herokuapp.com/',
-        'https://moneycare.pythonanywhere.com/google/authorized'
-    )
-
-    if url == request.url:
-        abort(400)
-
-    return redirect(url)
-
-
 @app.route('/google-login')
 def google_login():
-    print('IN GOOGLE LOGIN')
+
     if not google.authorized:
         return redirect(url_for('google.login'))
-    print('AFTER IF')
     resp = google.get('/oauth2/v1/userinfo')
-    retval = resp.json()
-    print('RETVAL', retval)
-    gname = retval['name']
-    gmail = retval['email']
+    data = resp.json()
+    retval = {}
+    retval['name'] = data['name']
+    retval['email'] = data['email']
 
-    url = f'https://moneycare.pythonanywhere.com/google-login?name={gname}&email={gmail}'
+    url = (
+        'https://moneycare.pythonanywhere.com/google-login?' +
+        url_encode(retval)
+    )
 
     return redirect(url)

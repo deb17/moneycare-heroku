@@ -32,8 +32,8 @@ def google_login():
     resp = google.get('/oauth2/v1/userinfo')
     data = resp.json()
     retval = {}
-    retval['name'] = data.get('name', 'NA')
-    retval['email'] = data.get('email', 'NA')
+    retval['name'] = data.get('name') or 'NA'
+    retval['email'] = data.get('email') or 'NA'
 
     url = (
         'https://moneycare.pythonanywhere.com/google-login?' +

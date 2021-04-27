@@ -7,7 +7,7 @@ app = Flask(__name__)
 def index():
 
     url = request.url.replace(
-        'https://debs-moneycare.herokuapp.com',
+        'https://debs-moneycare.herokuapp.com/',
         'https://moneycare.pythonanywhere.com/google/authorized'
     )
 

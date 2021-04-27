@@ -39,10 +39,10 @@ def google_login():
 
     resp = google.get('/oauth2/v1/userinfo')
     retval = resp.json()
-
+    print('RETVAL', retval)
     gname = retval['name']
     gmail = retval['email']
 
-    url = f'https://moneycare.pythonanywhere.com/auth/google-login?name={gname}&email={gmail}'
+    url = f'https://moneycare.pythonanywhere.com/google-login?name={gname}&email={gmail}'
 
     return redirect(url)

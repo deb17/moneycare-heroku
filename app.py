@@ -16,6 +16,7 @@ google_blueprint = make_google_blueprint(
         'https://www.googleapis.com/auth/userinfo.profile'],
     redirect_to='google_login'
 )
+app.register_blueprint(google_blueprint)
 
 
 @app.route('/')

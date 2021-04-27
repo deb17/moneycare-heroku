@@ -35,9 +35,10 @@ def index():
 
 @app.route('/google-login')
 def google_login():
+    print('IN GOOGLE LOGIN')
     if not google.authorized:
         return redirect(url_for('google.login'))
-
+    print('AFTER IF')
     resp = google.get('/oauth2/v1/userinfo')
     retval = resp.json()
     print('RETVAL', retval)

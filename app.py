@@ -28,6 +28,7 @@ app.register_blueprint(google_blueprint)
 def google_login():
 
     if not google.authorized:
+        print('NOT AUTHORIZED')
         return redirect(url_for('google.login'))
     resp = google.get('/oauth2/v1/userinfo')
     data = resp.json()
@@ -39,5 +40,6 @@ def google_login():
         'https://moneycare.pythonanywhere.com/google-login?' +
         url_encode(retval)
     )
-
+    print(retval)
+    del google_blueprint.token
     return redirect(url)
